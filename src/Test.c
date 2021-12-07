@@ -2,6 +2,11 @@
 #define __TEST_c__
 #include "includes.h"
 
+// bug fixed in issue branch(@ B user)
+//
+// ...
+//
+
 uint8_t hall, Direction = 0;
 const uint8_t MoveTable1[8] = {0, 50, 11, 56, 44, 14, 35, 0};
 const uint8_t MoveTable2[8] = {0, 35, 14, 44, 56, 11, 50, 0};
