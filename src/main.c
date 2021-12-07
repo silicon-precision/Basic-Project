@@ -59,6 +59,9 @@ __near_func uint8_t check_tick(uint8_t task_tick)
 	return ret;
 }
 
+// modified in main branch(@ A user)
+// ...
+//
 __near_func void main(void)
 {
 	uint8_t tx_tick = 0;
