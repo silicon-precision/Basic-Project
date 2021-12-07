@@ -1,0 +1,25 @@
+//   Revision control system
+//       $Id: lnk51ew.xcl 1.9 2004/02/11 17:17:04Z owi Exp $
+
+// Segment limits
+// --------------
+-D_PDATA_START=0x0400           // First address for PDATA memory.
+-D_PDATA_END=0x04FF             // Last address for PDATA memory.
+-D_CODE_END=7FFFF              // Last address for code.
+-D_XDATA_Z_START=8000
+-D_XDATA_Z_END=7FFFF             // Last address of xdata memory.
+-D_IXDATA_START=0               // First address of on chip XDATA memory.
+-D_IXDATA_END=FFF               // Last address of on chip XDATA memory.
+
+// Extended stack
+// --------------
+-D?ESP=9B
+-P(XDATA)MYDATA=8000-8FFF
+
+// Chip mode controlers
+// --------------------
+-D?ACON=9D
+-D?DPS1=F6                     // DPTR control register for Dallas 400.
+
+-f .\IAR_Default\lnk_base.xcl
+//-f .\xcl\lnk_00be.xcl

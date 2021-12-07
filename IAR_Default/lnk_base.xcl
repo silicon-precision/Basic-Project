@@ -1,0 +1,124 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// This is a XLINK command file.
+//
+//
+//   Revision control system
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Variables (used below)
+//
+
+-D?REGISTER_BANK=0        // Default register bank (0,1,2,3).
+-D_REGISTER_BANK_START=0  // Start address for default register bank (00,08,10,18).
+-D?PBANK_NUMBER=04	  // high byte of 16-bit address to the PDATA area
+-D?PBANK=A0               // Most significant byte in MOVX A,@R0. (0xA0 is sfr P2)
+-D?PBANK_EXT=0xEA         // Most significant byte in MOVX A,@R0. (0xEA is for Dallas DS80C390)
+-D?VB=20                  // Used to refer to BREG as byte.
+
+// See configuration section concerning printf/sprintf and scanf/sscanf to see
+// how you can configure _formatted_write and _formatted_read routines.
+//-e_medium_write=_formatted_write
+//-e_medium_read=_formatted_read
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// RAM memory
+//
+
+// Setup "bit" segments (only for '__no_init bool' variables).
+-Z(BIT)BREG=0-7
+-Z(BIT)BIT_N=0
+
+-Z(DATA)REGISTERS+8=_REGISTER_BANK_START
+-Z(DATA)BDATA_Z=20-2F
+-Z(DATA)VREG+_NR_OF_VIRTUAL_REGISTERS=08-7F
+-Z(DATA)PSP,XSP=08-7F
+-Z(DATA)DOVERLAY=08-7F
+-Z(DATA)DATA_I,DATA_Z,DATA_N=08-7F
+
+-U(IDATA)0-7F=(DATA)0-7F
+-Z(IDATA)IDATA_I,IDATA_Z,IDATA_N=08-FF
+-Z(IDATA)ISTACK+_IDATA_STACK_SIZE#08-FF
+-Z(IDATA)IOVERLAY=08-FF
+
+//
+// Stacks located in XDATA
+//
+-Z(XDATA)EXT_STACK+_EXTENDED_STACK_SIZE=_EXTENDED_STACK_START-_EXTENDED_STACK_END
+-Z(XDATA)PSTACK+_PDATA_STACK_SIZE=_PDATA_START-_PDATA_END
+-Z(XDATA)XSTACK+_XDATA_STACK_SIZE=8b00-8fff
+
+//
+// PDATA - data memory
+//
+-Z(XDATA)PDATA_N,PDATA_Z,PDATA_I=_PDATA_START-_PDATA_END
+
+//
+// XDATA - data memory
+//
+-Z(XDATA)IXDATA_N,IXDATA_Z,IXDATA_I=_IXDATA_START-_IXDATA_END
+-Z(XDATA)XDATA_N,XDATA_Z,XDATA_I=8000-8aff
+-Z(CONST)XDATA_ROM_C=8000-8fff
+
+//
+// FAR - extended data memory
+//
+
+// initialized FAR data
+// Note: The segment FAR_I and FAR_ID must start at the same address within a 64k bank,
+// they must therefore be located first in the FAR data area, and in the xlink linker file
+// Note: *_I segment is located in RAM but *_ID segments is located in ROM
+
+//-Z(SPLIT-XDATA)FAR_I=[0A000-_XDATA_END]/6000
+//-Z(SPLIT-CODE)FAR_ID=[0A000-_XDATA_END]/6000
+//-Z(SPLIT-XDATA)FAR_Z=[0A000-_XDATA_END]/6000
+//-P(XDATA)FAR_N=[A000-_XDATA_END]*E+10000
+//-P(CONST)FAR_ROM_C=[A000-_XDATA_END]*E+10000
+
+//
+// HUGE - extended data memory
+//
+//-Z(XDATA)HUGE_N,HUGE_Z,HUGE_I=00000-_XDATA_END
+//-Z(CONST)HUGE_ROM_C=00000-_XDATA_END
+
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// ROM memory
+//
+
+// Note: INTVEC must be placed first.
+// Note: CSTART Must be located in first 64k.
+
+-Z(CODE)TABLE_SEG=1000-FFFF
+
+-Z(CODE)BRJPEG_IBB_SEG=10000-FFFFF
+//
+// Program memory
+//
+-Z(CODE)INTVEC=000
+-Z(CODE)CSTART=000-FFFF
+-Z(CODE)RCODE=000-FFFF
+-Z(CODE)TINY_CODE=000-7FF
+-Z(CODE)NEAR_CODE=000-_CODE_END
+-Z(CODE)FAR_CODE=000-_CODE_END
+-Z(CODE)HUGE_CODE=000-_CODE_END
+-P(CODE)BANKED_CODE=[_CODEBANK_START-_CODEBANK_END]*16+10000 //  Setup bank-switched segments.
+
+//
+// Initializers
+//
+-Z(CODE)BIT_ID,BDATA_ID,DATA_ID,IDATA_ID,IXDATA_ID,PDATA_ID,XDATA_ID=000-_CODE_END
+-Z(CODE)HUGE_ID=000-_CODE_END
+
+//
+// Constants located in code memory
+//
+-Z(CODE)CODE_C=000-_CODE_END
+-Z(CODE)FAR_CODE_C=000-_CODE_END
+-Z(CODE)HUGE_CODE_C=000-_CODE_END
+
+-cx51
